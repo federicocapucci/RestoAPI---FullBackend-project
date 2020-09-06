@@ -1,14 +1,12 @@
-<h2 style="background-color: gray; color:white">Proyecto Acamica #3 - Delilah Resto (API Rest)</h2>
+<body style="background-color: dark-gray; color:white">
+<h2 style="background-color: blue; color:white">Proyecto Acamica #3 - Delilah Resto (API Rest)</h2>
 
-## 📝 Tabla de contenidos
+## Tabla de contenidos
 
 - [Sobre este proyecto](#sobre)
 - [Instrucciones de uso](#Instrucciones)
-- [Usage](#usage)
-- [Documentation](#documentation)
-- [Testing the Api](#testing)
-- [Built Using](#built_using)
-- [Authors](#authors)
+- [Documentacion](#Documentacion)
+- [Autor](#Autor)
 
 ##  Sobre este proyecto <a name = "sobre"></a>
 
@@ -33,53 +31,53 @@ Sigue los pasos a continuacion para poder instalar el proyecto desde Github
 1- Elije una carpeta en el sistema, y lanza una ventana de Command Prompt (Tecla Windows + R, escribe 'CMD' y dale OK, o shift + right click > 'Abrir ventana de Powershell') y clona el repositorio con el siguiente comando.
 
 ```
-git clone https://github.com/shift-developer/DelilahRestoApi-localSQL.git
+git clone https://github.com/federicocapucci/RestoAPI.git
 ```
 
-Then install the following dependencies
+2- Luego, es necesario abrir Visual code (Node debe de estar instalado). Y corre el siguiente codigo en una terminal, para instalar los modulos necesarios.
 
 ```
-npm i express body-parser bcryptjs jsonwebtoken moment mysql2 sequelize
+npm install express bcrypt jsonwebtoken sequelize mysql2 
 
 ```
 
-Now, you have to start sql server on XAMPP and create a new session on HeidiSQL called "delilah_resto_localdb". Run on them the sql file for database creation: `./db/database.sql`.
+3- El siguiente paso es correr el programa 'Xampp' y activar (start) la opcion 'MySQL' en el puerto default (3306).
+<br><br>
+<img src="https://i.ibb.co/3FTvgRt/Xampp.png" alt="Xamp Config">
+<br><br><br><br>
 
+4- Abre el programa 'HeidiSQL' y crea una sesion, puedes llamarla 'RestoAPI' por ejemplo, con las opciones en default, luego abrela.
+<br><br>
+<img src="https://i.ibb.co/zQpNYGt/Heidi-Session.png" alt="Heidi Session setup">
+<br><br><br><br>
 
-## 🎈 Usage <a name="usage"></a>
+5- Carga y corre el archivo .SQL 'resto.sql' proveido en el repositorio, en la carpeta 'SQL Database' con las instrucciones para la creacion y populacion de la base de datos y tablas
+<br><br>
+<img src="https://i.ibb.co/JBYGsZs/Heidi-Load-SQLFile.png" alt="Heidi Load SQL">
+<br><br><br><br>
+6- Con esto, ya esta lista la base de datos con sus tablas correspondientes para poder empezar a hacer llamadas. 
+<br><br>
+<img src="https://i.ibb.co/4RNpjs8/Heidi-Ready.png" alt="Heidi ready">
+<br><br>
+Las tablas vienen con datos, para poder comenzar las pruebas inmediatamente, sin embargo, el usuario puede crear entradas adicionales al momento de probar los distintos Endpoints.
 
-To run the api, simply run this on the terminal
+7- Para arrancar el servidor, y empezar a probar los endpoints, corre el siguiente codigo en la terminal de Visual code
+
 ```
-node index.js
+node server.js
 ```
+8- Para poder testear los distintos tipos de pedidos a la API, se agrega un archivo llamado 'queries.rest' que deberia estar cargado en Visual code con el resto de archivos. Solo necesitas dar click a las distintas 'SEND REQUEST' para probar los requests con los datos por defecto, o puedes editar los datos dentro del mismo archivo. 
+<br><br>
+<img src="https://i.ibb.co/RggPG30/query-Example.png" alt="Query Example">
+<br><br><br><br>
 
-## 📄 Documentation <a name="documentation"></a>
+## Documentacion <a name="Documentacion"></a>
 
-Documentation can be found here
-https://app.swaggerhub.com/apis-docs/shift-developer/DelilahRestoApi/1.0.0
+La documentacion ala API se puede encontrar aqui:
+TBD - https://app.swaggerhub.com/apis-docs/shift-developer/DelilahRestoApi/1.0.0
 
-## 🚀 Testing the API <a name = "testing"></a>
 
-In order to test all the requests available of the app, there's a **Postman** Collection that you can find [here](https://documenter.getpostman.com/view/11768770/TVCZbBWD#81449741-6f9b-4b97-9e35-e844afd174ed).
+## Autor <a name = "Autor"></a>
 
-🔐 If you need to have admin permissions (like Products administration) use this sample data:
-```
-username: admin
-password: adminpass
-```
-User for tests:
-```
-username: ayuwoki_michael
-password: moonwalk185
-```
-
-## ⛏️ Built Using <a name = "built_using"></a>
-
-- [MySQL](https://www.mysql.com/) - Database
-- [Express](https://expressjs.com/) - Server Framework
-- [NodeJs](https://nodejs.org/en/) - Server Environment
-
-## ✍️ Authors <a name = "authors"></a>
-
-- [@shift-developer](https://github.com/shift-developer)
+- [federicocapucci](https://github.com/federicocapucci)
 

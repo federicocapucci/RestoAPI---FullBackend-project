@@ -167,5 +167,5 @@ Authorization: bearer {{tokenDefaultAdmin}}
 Content-Type: application/json
 
 {
-    "producto_ID": 70   
+    "producto_ID": 5   
 }
