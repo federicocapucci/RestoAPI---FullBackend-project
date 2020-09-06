@@ -1,0 +1,171 @@
+//------------------TOKENS PRE-CREADOS--------------//
+
+//Los tokens de Admin y Usuario default no vencen, son solo para probar la funcionalidad. Hay una tercera variable para guardar un token generado por quien este probando la API, lo puede guardar en 'tokenProfe' siguiendo el formato de los otros. Los nuevos tokens generados tienen vencimiento por Default de 5 minutos. Para usar los distintos Tokens hace falta comentar/des-comentar los distintos tokens, y asi probar la funcionalidad segun el usuario y los permisos.
+
+@tokenDefaultAdmin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjpbMywidHJ1ZSJdLCJpYXQiOjE1OTkzNjM5NzB9.eLTwQSke2ZHpInixTfpqpcZX90Cl7tDGNMibIntZaW0
+@tokenDefaultUser = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjpbMiwiMCJdLCJpYXQiOjE1OTkzNzE0NjV9.XuB_B5-aCJCh6eV3SB3f3nI1UGlCl3b-E6oWGYGGPVs
+@tokenProfe = "ACA PUEDES PONER TU NUEVO TOKEN GENERADO CUANDO TE LOGUEAS!(Tomarlo del Response al Endpoint de login)"
+
+
+//------------[[CHEQUEO DE ENDPOINTS]]--------------//
+//------------------USUARIOS------------------------//
+
+###REGISTRARSE
+POST http://localhost:3000/registro HTTP/1.1
+Content-Type: application/json
+
+{
+    "Nombre": "Profe",
+    "Apellido":"Acamica",
+    "Email":"profe@acamica.com",
+    "telefono": "321-856-8464",
+    "Direccion": "123 Awesome ST",
+    "Password": "unPassword"
+}
+
+
+###LOGIN (Primer usuario es ADMIN)
+POST http://localhost:3000/login HTTP/1.1
+Content-Type: application/json
+
+# {    
+#     "Email":"admin@root.com",     
+#     "Password": "root"
+# }
+
+{    
+    "Email":"profe@acamica.com",     
+    "Password": "unPassword"
+}
+
+
+###VER USUARIOS (USER o ADMIN)
+GET http://localhost:3000/usuario HTTP/1.1
+Authorization: bearer {{tokenDefaultAdmin}}
+//Authorization: bearer {{tokenDefaultUser}}
+//Authorization: bearer {{{{tokenProfe}}}}
+
+
+###EDITAR USUARIO/S (USER o ADMIN)
+PUT http://localhost:3000/usuario HTTP/1.1
+Authorization: bearer {{tokenDefaultAdmin}}
+//Authorization: bearer {{tokenDefaultUser}}
+//Authorization: bearer {{{{tokenProfe}}}}
+Content-Type: application/json
+
+{
+    "usuario_ID": 3,  
+    "Nombre": "Ramiro",
+    "Apellido": "Perino",
+    "Email": "pino@gmail.com",
+    "telefono": "321-856-8464",
+    "Direccion": "Blv illia 500 3D",
+    "Password": "newPassword"    
+}
+
+
+###BORRAR UN USUARIO (ADMIN)
+DELETE  http://localhost:3000/usuario HTTP/1.1
+Authorization: bearer {{tokenDefaultAdmin}}
+//Authorization: bearer {{tokenDefaultUser}}
+//Authorization: bearer {{{{tokenProfe}}}}
+Content-Type: application/json
+
+{
+    "usuario_ID": 4   
+}
+
+
+//------------------PEDIDOS------------------------//
+
+
+###HACER UN PEDIDO
+POST http://localhost:3000/pedidos HTTP/1.1
+Authorization: bearer {{tokenDefaultAdmin}}
+//Authorization: bearer {{tokenDefaultUser}}
+//Authorization: bearer {{{{tokenProfe}}}}
+Content-Type: application/json
+
+{       
+    "tipoPago": "Credito",
+    "items":[{"Producto_ID":4,"Cantidad":2},{"Producto_ID":1,"Cantidad":3}],
+    "Total": 1000
+}
+
+
+###VER PEDIDOS (USER o ADMIN)
+GET http://localhost:3000/pedidos HTTP/1.1
+Authorization: bearer {{tokenDefaultAdmin}}
+//Authorization: bearer {{tokenDefaultUser}}
+//Authorization: bearer {{{{tokenProfe}}}}
+
+
+
+###EDITAR ESTADO DE UN PEDIDO (ADMIN)
+PUT http://localhost:3000/pedidos/20 HTTP/1.1
+Authorization: bearer {{tokenDefaultAdmin}}
+//Authorization: bearer {{tokenDefaultUser}}
+//Authorization: bearer {{{{tokenProfe}}}}
+Content-Type: application/json
+
+{
+    "status": "Enviado"
+}
+
+
+###BORRAR UN PEDIDO (ADMIN)
+DELETE  http://localhost:3000/pedidos/20 HTTP/1.1
+Authorization: bearer {{tokenDefaultAdmin}}
+//Authorization: bearer {{tokenDefaultUser}}
+//Authorization: bearer {{{{tokenProfe}}}}
+
+
+
+//------------------PLATOS-------------------------//
+
+
+###CARGA DEL INDEX Muestra todos los platos
+GET http://localhost:3000/ HTTP/1.1
+
+
+
+###CREAR UN PLATO (ADMIN)
+POST http://localhost:3000/platos HTTP/1.1
+Authorization: bearer {{tokenDefaultAdmin}}
+//Authorization: bearer {{tokenDefaultUser}}
+//Authorization: bearer {{{{tokenProfe}}}}
+Content-Type: application/json
+
+{
+    "Nombre": "Choripan Deluxe",
+    "Precio": 185,
+    "Foto":"https://www.laylita.com/recetas/wp-content/uploads/Receta-del-choripan.jpg"
+}
+
+
+###EDITAR UN PLATO (ADMIN)
+PUT http://localhost:3000/platos HTTP/1.1
+Authorization: bearer {{tokenDefaultAdmin}}
+//Authorization: bearer {{tokenDefaultUser}}
+//Authorization: bearer {{{{tokenProfe}}}}
+Content-Type: application/json
+
+{
+    "producto_ID":1,
+    "datos":{        
+        "Nombre": "Pizza Margarita",
+        "Precio": 255        
+    }    
+}
+
+
+###BORRAR UN PLATO (ADMIN)
+DELETE  http://localhost:3000/platos HTTP/1.1
+Authorization: bearer {{tokenDefaultAdmin}}
+//Authorization: bearer {{tokenDefaultUser}}
+//Authorization: bearer {{{{tokenProfe}}}}
+Content-Type: application/json
+
+{
+    "producto_ID": 70   
+}
