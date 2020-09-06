@@ -1,5 +1,4 @@
-<body style="background-color: dark-gray; color:white">
-<h2 style="background-color: blue; color:white">Proyecto Acamica #3 - Delilah Resto (API Rest)</h2>
+<h1>Proyecto Acamica #3 - Delilah Resto (API Rest)</h1>
 
 ## Tabla de contenidos
 
@@ -80,4 +79,3 @@ TBD - https://app.swaggerhub.com/apis-docs/shift-developer/DelilahRestoApi/1.0.0
 ## Autor <a name = "Autor"></a>
 
 - [federicocapucci](https://github.com/federicocapucci)
-
