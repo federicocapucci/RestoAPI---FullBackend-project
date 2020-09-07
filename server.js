@@ -29,6 +29,7 @@ const expireTokenTime = 60
 
 /*Registrar Usuario*/
 app.post('/registro', async(req, res) => {
+    console.log("entro alguien")
     const {
         Nombre,
         Apellido,

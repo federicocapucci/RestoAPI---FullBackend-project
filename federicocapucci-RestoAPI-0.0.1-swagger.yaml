@@ -2,7 +2,7 @@ openapi: 3.0.0
 # Added by API Auto Mocking Plugin
 servers:
   - description: Local Server
-    url: https://localhost:3000
+    url: http://localhost:3000
 info:
   description: Delilah Resto el es tercer proyecto del curso DWFS de Acamica. El proyecto consiste en la construccion de una API de un restaurante, que maneja ordenes, permite crear un usario, ademas de un panel Admin
   version: 0.0.1
