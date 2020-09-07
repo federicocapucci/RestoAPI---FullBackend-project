@@ -45,11 +45,10 @@ app.post('/registro', async(req, res) => {
             })
             .then((respuesta) => {
 
-                res.status(201).send('Usuario creado con exito')
+                res.status(201).send({ msg: 'Usuario creado con exito' })
             })
-            .catch((err) => res.status(500).send({
-                Message: "Ha occurrido un error",
-                error: err
+            .catch((err) => res.status(409).send({
+                msg: "Este email ya esta registrado",
             }))
     } catch {
         res.status(500).send()
@@ -91,10 +90,10 @@ app.post('/login', async(req, res) => {
                     })
 
                 } else {
-                    res.status(404).send('Contraseña incorrecta')
+                    res.status(401).send({ msg: 'Contraseña incorrecta' })
                 }
             } else {
-                res.status(404).send('No existe el usuario')
+                res.status(404).send({ msg: 'No existe el usuario' })
             }
         })
         .catch((err) => res.status(500).send(err))
@@ -184,7 +183,7 @@ app.put('/usuario', tokenVerifier, (req, res) => {
                             Data: respuesta[0]
                         })
                     })
-                    .catch((err) => res.status(501).send(err))
+                    .catch((err) => res.status(409).send("Este email ya esta registrado"))
             } else {
                 return res.status(404).send('No hay un usuario con este ID')
             }
@@ -214,7 +213,7 @@ app.delete('/usuario', tokenVerifier, (req, res) => {
         res.status(200).send("El usuario fue removido exitosamente")
 
     } else {
-        res.status(401).send('No estas autorizado')
+        res.status(401).send('N ')
     }
 })
 
@@ -239,7 +238,7 @@ app.post('/pedidos', tokenVerifier, (req, res) => {
             }
 
             res.status(200).send({
-                message: 'Pedido recibido, su numero de pedido es \'' + respuesta[0] + '\'',
+                msg: 'Pedido recibido, su numero de pedido es \'' + respuesta[0] + '\'',
                 pedido: pedido
             })
 
@@ -275,26 +274,34 @@ app.get('/pedidos', tokenVerifier, (req, res) => {
 
 })
 
-/*Editar un Pedido - SOLO ADMIN*/
+/*Editar estado de un Pedido - SOLO ADMIN*/
 
 app.put('/pedidos/:pedido_ID', tokenVerifier, (req, res) => {
 
     if (req.isAdmin) {
 
+        let pedido_ID = req.params.pedido_ID;
 
-        let pedidoId = req.params.pedido_ID;
+        db.query('SELECT * FROM pedidos where pedido_ID = ?', {
+            replacements: [pedido_ID]
+        }).then((respuesta) => {
+            if (respuesta[0].length != 0) {
 
-        db.query('UPDATE pedidos SET Estado = ? WHERE Pedido_ID = ?', {
-                replacements: [req.body.status, pedidoId]
-            })
-            .then((respuesta) => {
+                db.query('UPDATE pedidos SET Estado = ? WHERE Pedido_ID = ?', {
+                        replacements: [req.body.status, pedido_ID]
+                    })
+                    .then((respuesta) => {
 
-                res.status(200).send('El estado del pedido ha sido modificado a ' + req.body.status)
-            })
-            .catch((err) => res.status(500).send(err))
+                        res.status(200).send('El estado del pedido ha sido modificado a ' + req.body.status)
+                    })
+                    .catch((err) => res.status(500).send({ msg: 'ha ocurrido un error', err: err }))
+            } else {
+                return res.status(404).send({ msg: 'El numero de pedido no existe' })
+            }
+        })
 
     } else {
-        res.status(401).send('No estas autorizado')
+        res.status(401).send({ msg: 'No estas autorizado' })
     }
 
 })
@@ -304,23 +311,31 @@ app.put('/pedidos/:pedido_ID', tokenVerifier, (req, res) => {
 
 app.delete('/pedidos/:pedido_ID', tokenVerifier, (req, res) => {
 
+
     if (req.isAdmin) {
 
-
-
         const pedido_ID = req.params.pedido_ID
-
-
-
-        db.query('DELETE from detalles_pedido where pedido_ID = ?', {
+        db.query('SELECT * FROM pedidos where pedido_ID = ?', {
             replacements: [pedido_ID]
-        })
+        }).then((respuesta) => {
+            if (respuesta[0].length != 0) {
 
-        db.query('DELETE from pedidos where pedido_ID = ?', {
-            replacements: [pedido_ID]
-        })
+                db.query('DELETE from detalles_pedido where pedido_ID = ?', {
+                    replacements: [pedido_ID]
+                })
 
-        res.status(200).send("El pedido fue removido exitosamente")
+                db.query('DELETE from pedidos where pedido_ID = ?', {
+                    replacements: [pedido_ID]
+                })
+
+                res.status(200).send({ msg: "El pedido fue removido exitosamente" })
+
+            } else {
+
+                return res.status(404).send({ msg: 'El numero de pedido no existe' })
+            }
+
+        })
 
     } else {
         res.status(401).send('No estas autorizado')
@@ -361,7 +376,7 @@ app.post('/platos', tokenVerifier, (req, res) => {
                 replacements: [Nombre, Precio, Foto]
             })
             .then((respuesta) => {
-                res.status(201).send('Producto \'' + Nombre + '\' creado correctamente')
+                res.status(201).send({ msg: 'Producto \'' + Nombre + '\' creado correctamente' })
             })
             .catch((err) => res.status(500).send(err))
 
@@ -390,31 +405,38 @@ app.put('/platos', tokenVerifier, (req, res) => {
         db.query('select * from productos where producto_ID = ?', {
                 replacements: [producto_ID]
             }).then((respuesta) => {
+                if (respuesta[0] != 0) {
 
-                if (!Nombre) {
-                    Nombre = respuesta[0][0].Nombre
+                    if (!Nombre) {
+                        Nombre = respuesta[0][0].Nombre
 
-                }
-                if (!Precio) {
-                    Precio = respuesta[0][0].Precio
+                    }
+                    if (!Precio) {
+                        Precio = respuesta[0][0].Precio
 
-                }
-                if (!Foto) {
-                    Foto = respuesta[0][0].Foto
+                    }
+                    if (!Foto) {
+                        Foto = respuesta[0][0].Foto
 
-                }
+                    }
 
-                db.query('UPDATE productos SET Nombre = ? , Precio = ? , Foto = ? where producto_ID = ?', {
-                        replacements: [Nombre, Precio, Foto, producto_ID]
-                    }).then((respuesta) => {
-                        res.status(200).send({
-                            Message: "El plato " + Nombre + " fue actualizado",
-                            Data: respuesta[0]
+                    db.query('UPDATE productos SET Nombre = ? , Precio = ? , Foto = ? where producto_ID = ?', {
+                            replacements: [Nombre, Precio, Foto, producto_ID]
+                        }).then((respuesta) => {
+                            res.status(200).send({
+                                msg: "El plato " + Nombre + " fue actualizado"
+                            })
                         })
-                    })
-                    .catch((err) => res.status(500).send(err))
+                        .catch((err) => res.status(500).send(err))
+                } else {
+
+                    res.status(404).send({ msg: 'El plato no se encuentra en la base de datos' })
+
+                }
             })
             .catch((err) => res.status(500).send(err))
+
+
     } else {
         res.status(401).send('No estas autorizado')
     }
@@ -445,15 +467,15 @@ app.delete('/platos', tokenVerifier, (req, res) => {
                     replacements: [producto_ID]
                 })
 
-                return res.status(200).send("El plato fue removido exitosamente")
+                return res.status(200).send({ msg: "El plato fue removido exitosamente" })
             } else {
 
-                return res.status(404).send("El plato no existe")
+                return res.status(404).send({ msg: "El plato no existe" })
             }
         })
 
     } else {
-        res.status(401).send('No estas autorizado')
+        res.status(401).send({ msg: 'No estas autorizado' })
     }
 
 })

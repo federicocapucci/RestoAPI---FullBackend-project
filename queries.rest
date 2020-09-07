@@ -57,7 +57,7 @@ Content-Type: application/json
     "usuario_ID": 3,  
     "Nombre": "Ramiro",
     "Apellido": "Perino",
-    "Email": "pino@gmail.com",
+    "Email": "admin@root.com",
     "telefono": "321-856-8464",
     "Direccion": "Blv illia 500 3D",
     "Password": "newPassword"    
@@ -102,19 +102,19 @@ Authorization: bearer {{tokenDefaultAdmin}}
 
 
 ###EDITAR ESTADO DE UN PEDIDO (ADMIN)
-PUT http://localhost:3000/pedidos/20 HTTP/1.1
+PUT http://localhost:3000/pedidos/5 HTTP/1.1
 Authorization: bearer {{tokenDefaultAdmin}}
 //Authorization: bearer {{tokenDefaultUser}}
 //Authorization: bearer {{{{tokenProfe}}}}
 Content-Type: application/json
 
 {
-    "status": "Enviado"
+    "status": "Nuevo"
 }
 
 
 ###BORRAR UN PEDIDO (ADMIN)
-DELETE  http://localhost:3000/pedidos/20 HTTP/1.1
+DELETE  http://localhost:3000/pedidos/1 HTTP/1.1
 Authorization: bearer {{tokenDefaultAdmin}}
 //Authorization: bearer {{tokenDefaultUser}}
 //Authorization: bearer {{{{tokenProfe}}}}
@@ -151,10 +151,11 @@ Authorization: bearer {{tokenDefaultAdmin}}
 Content-Type: application/json
 
 {
-    "producto_ID":1,
+    "producto_ID":10,
     "datos":{        
         "Nombre": "Pizza Margarita",
-        "Precio": 255        
+        "Precio": 255,
+        "Foto": "https://imagenpng.com/wp-content/uploads/2016/07/pizza1.jpg"
     }    
 }
 
@@ -167,5 +168,5 @@ Authorization: bearer {{tokenDefaultAdmin}}
 Content-Type: application/json
 
 {
-    "producto_ID": 5   
+    "producto_ID": 3   
 }

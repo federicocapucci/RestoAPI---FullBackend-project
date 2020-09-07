@@ -6,22 +6,28 @@
 - [Instrucciones de uso](#Instrucciones)
 - [Documentacion](#Documentacion)
 - [Autor](#Autor)
+<br><br>
+
 
 ##  Sobre este proyecto <a name = "sobre"></a>
 
 Este es el tercer y ultimo proyecto del curso de Desarrollo Full-Stack de Acamica. La idea era crear una API utilizando las herramientas de Backend y base de datos aprendidas durante el curso. La API consiste en una lista de Endpoints de un restaurante, donde se pueden registrar nuevos usuarios, hacer pedidos de platos, crear/editar y borrar usuarios, platos y pedidos, basado en permisos.
+<br><br>
 
 ## Instrucciones de uso <a name = "Instrucciones"></a>
 
 Sigue las instrucciones a continuacion para poder instalar el proyecto en tu maquina.
+<br><br>
 
-### Prerequisitos
+## Prerequisitos
 
 Necesitas tener:
 - [Visual Code](https://code.visualstudio.com/) instalado.
+- [REST Client (Extension de Visual Code para probar Endpoints)](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) instalado.
 - [NodeJS](https://nodejs.org/) instalado.
 - [XAMPP](https://www.apachefriends.org/es/index.html) instalado.
 - [HeidiSQL](https://www.heidisql.com/download.php) instalado, o algun otro programa SQL para poder hostear y manejar los pedidos a la base de datos.
+<br><br>
 
 ### Instalacion del proyecto
 
@@ -65,15 +71,17 @@ Las tablas vienen con datos, para poder comenzar las pruebas inmediatamente, sin
 ```
 node server.js
 ```
-8- Para poder testear los distintos tipos de pedidos a la API, se agrega un archivo llamado 'queries.rest' que deberia estar cargado en Visual code con el resto de archivos. Solo necesitas dar click a las distintas 'SEND REQUEST' para probar los requests con los datos por defecto, o puedes editar los datos dentro del mismo archivo. 
+8- Para poder testear los distintos tipos de pedidos a la API, se agrega un archivo llamado 'queries.rest' (Requiere la extension REST Client). Solo necesitas dar click a las distintas 'SEND REQUEST' para probar los requests con los datos por defecto, o puedes editar los datos dentro del mismo archivo. 
 <br><br>
 <img src="https://i.ibb.co/RggPG30/query-Example.png" alt="Query Example">
-<br><br><br><br>
+<br><br>
 
 ## Documentacion <a name="Documentacion"></a>
 
 La documentacion ala API se puede encontrar aqui:
-TBD - https://app.swaggerhub.com/apis-docs/shift-developer/DelilahRestoApi/1.0.0
+<br>
+https://app.swaggerhub.com/apis-docs/federicocapucci/RestoAPI/0.0.1
+<br><br>
 
 
 ## Autor <a name = "Autor"></a>

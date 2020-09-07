@@ -1,0 +1,835 @@
+openapi: 3.0.0
+# Added by API Auto Mocking Plugin
+servers:
+  - description: Local Server
+    url: https://localhost:3000
+info:
+  description: Delilah Resto el es tercer proyecto del curso DWFS de Acamica. El proyecto consiste en la construccion de una API de un restaurante, que maneja ordenes, permite crear un usario, ademas de un panel Admin
+  version: 0.0.1
+  title: Delilah Resto API
+  contact:
+    email: federicocapucci@hotmail.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    
+tags:
+  - name: "Usuarios"
+    description: "Request de usuarios"
+  - name: "Platos"
+    description: "Request de platos"
+  - name: "Pedidos"
+    description: "Request de pedidos"
+    
+paths:
+
+  /:
+    get:
+      tags:
+        - Platos
+      summary: Muestra todos los platos disponibles
+      description: Muestra todos los platos disponibles
+      
+      responses:
+        "200":
+          description: Muestra todos los platos que hay disponibles
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlatosResponse200"
+      
+
+  /registro:
+    post:
+      tags:
+        - Usuarios
+      summary: Agrega un nuevo usuario
+      description: Agrega un nuevo usuario a la base de datos
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Registro"
+
+      responses:
+        "201":
+          description: Usuario creado con exito
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsuarioRegistroResponse201"
+        "409":
+          description: Email ya se encuentra registrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsuarioRegistroResponse409"
+              
+        "500":
+          description: Ha ocurrido un error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: "string"
+                    example: "Ha ocurrido un error"
+                  error:
+                    type: string
+                    example: Email is already used
+        
+  /login:
+    post:
+      tags:
+        - "Usuarios"
+      summary: Hacer log in de usuario existente
+      description: Hacer log in de usuario existente y proveerlo de un token de autorizacion
+
+      requestBody:
+        required: true
+        description: Email del usuario y Password para poder loguearse.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Usuario"
+
+      responses:
+        "200":
+          description: Usuario Logueado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsuarioLoginResponse200"
+        "401":
+          description: Contraseña Incorrecta
+          content:
+            application/json:
+             schema:
+                $ref: "#/components/schemas/UsuarioLoginResponse401"
+        "404":
+          description: No existe el usuario
+          content:
+            application/json:
+             schema:
+                $ref: "#/components/schemas/UsuarioLoginResponse404"
+
+  /usuario:
+    get:
+      tags:
+        - "Usuarios"
+      summary: Ver el usuario logueado (user) o todos los usuarios (admin)
+      description: Ver el usuario logueado (user) o todos los usuarios (admin). Los permisos vienen en el token
+
+      parameters:
+        - name: accessToken
+          in: header
+          description: Token
+          schema:
+            $ref: "#/components/schemas/TokenUsuario"
+          required: true
+
+      responses:
+        "200":
+          description: "Array con todos los usuarios (Admin), o un unico usuario (User)"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Usuario"
+
+        "403":
+          description: Token invalido
+          content:
+            application/json:
+              schema:
+                type: "string"
+                example: "El token es invalido"
+    put:
+      tags:
+        - "Usuarios"
+      summary: "Editar tu usuario (user) o cualquier usuario (admin)"
+      description: "Editar tu usuario (user) o cualquier usuario (admin). Los permisos vienen en el token"
+      parameters:
+        - name: accessToken
+          in: header
+          description: Token
+          schema:
+            $ref: "#/components/schemas/TokenUsuario"
+          required: true
+      
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UsuarioEdit"
+
+      responses:
+        "200":
+          description: "El usuario elegido es modificado correctamente"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsuarioEditResponse200"
+        "404":
+          description: "El usuario no se encuentra en la Bade de datos"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsuarioEditResponse404"
+        "409":
+          description: Email ya se encuentra registrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsuarioRegistroResponse409"
+    delete:
+      tags:
+        - "Usuarios"
+      summary: "Eliminar un usuario (Solo admin)"
+      description: "Eliminar un usuario (Solo admin). Los permisos vienen en el token"
+      parameters:
+        - name: accessToken
+          in: header
+          description: Token
+          schema:
+            $ref: "#/components/schemas/TokenUsuario"
+          required: true
+      
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UsuarioDelete"
+
+      responses:
+        "200":
+          description: "El usuario elegido es borrado de la base de datos"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsuarioDeleteResponse200"
+        "401":
+          description: "El user no esta autorizado ya que no es admin"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response401"
+              
+
+  /pedidos:
+    post:
+      tags:
+        - "Pedidos"
+      summary: Permite al usuario crear un pedido
+      description: Permite al usuario crear un pedido. El usuario debe de estar logueado. Los permisos vienen en el token
+
+      parameters:
+        - name: accessToken
+          in: header
+          description: Token
+          schema:
+            $ref: "#/components/schemas/TokenUsuario"
+          required: true
+          
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PedidosCreate"
+
+      responses:
+        "200":
+          description: "El pedido es creado"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PedidoCreateResponse200"
+    get:
+      tags:
+        - "Pedidos"
+      summary: Permite al usuario ver sus pedidos (user) o todos los pedidos existentes (Admin)
+      description: Permite al usuario ver sus pedidos (user) o todos los pedidos existentes (Admin). Los permisos vienen en el token
+
+      parameters:
+        - name: accessToken
+          in: header
+          description: Token
+          schema:
+            $ref: "#/components/schemas/TokenUsuario"
+          required: true
+          
+      responses:
+        "200":
+          description: Lista de pedidos es enviada al usuario
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PedidoViewResponse200"
+  
+  /pedidos/{id}:
+    put:
+      tags:
+        - "Pedidos"
+      summary: Permite Admin editar el estado de un pedido
+      description: Permite Admin editar el estado de un pedido. Los permisos vienen en el token
+
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            
+        - name: accessToken
+          in: header
+          description: Token
+          schema:
+            $ref: "#/components/schemas/TokenUsuario"
+          required: true
+          
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PedidosStatusChange"
+
+      responses:
+        "200":
+          description: "El estado del pedido es modificado correctamente"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PedidosStatusChangeResponse200"     
+        "404":
+          description: "No se encuentra el pedido en la base de datos"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PedidosStatusChangeResponse404"
+        "401":
+          description: "El usuario no esta autorizado a hacer el cambio"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Response401"
+                  
+    delete:
+      tags:
+        - "Pedidos"
+      summary: Permite Admin borrar un pedido
+      description: Permite Admin borrar un pedido. Los permisos vienen en el token
+
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            
+        - name: accessToken
+          in: header
+          description: Token
+          schema:
+            $ref: "#/components/schemas/TokenUsuario"
+          required: true
+
+      responses:
+        "200":
+          description: "El pedido es borrado correctamente"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PedidosDeleteResponse200"
+        "404":
+          description: "No se encuentra el pedido en la base de datos"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PedidosStatusChangeResponse404"
+        "401":
+          description: "El usuario no esta autorizado a hacer el cambio"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Response401"
+                  
+  /platos:
+    post:
+      tags:
+        - "Platos"
+      summary: Permite al Admin (solamente) crear un plato
+      description: Permite al ADMIN crear un plato. Los permisos vienen en el token
+
+      parameters:
+        - name: accessToken
+          in: header
+          description: Token
+          schema:
+            $ref: "#/components/schemas/TokenUsuario"
+          required: true
+          
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlatosCreate"
+
+      responses:
+        "200":
+          description: "El plato es creado"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlatoCreateResponse200"
+    put:
+      tags:
+        - "Platos"
+      summary: Permite Admin (solamente) editar un plato
+      description: "Permite Admin editar un plato. Todos los parametros son opcionales excepto por el 'producto_id' Los permisos vienen en el token"
+
+      parameters:
+        - name: accessToken
+          in: header
+          description: Token
+          schema:
+            $ref: "#/components/schemas/TokenUsuario"
+          required: true
+          
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlatosChange"
+
+      responses:
+        "200":
+          description: "El plato es editado correctamente"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlatoEditResponse200"     
+        "404":
+          description: "No se encuentra el plato en la base de datos"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlatoEditResponse404"
+        "401":
+          description: "El usuario no esta autorizado a hacer el cambio"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Response401"
+    delete:
+      tags:
+        - "Platos"
+      summary: Permite Admin (solamente) borrar un plato de la base de datos
+      description: "Permite Admin borrar un plato. Los permisos vienen en el token"
+
+      parameters:
+        - name: accessToken
+          in: header
+          description: Token
+          schema:
+            $ref: "#/components/schemas/TokenUsuario"
+          required: true
+          
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlatosDelete"
+
+      responses:
+        "200":
+          description: "El plato es eliminado correctamente"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlatoDeleteResponse200"     
+        "404":
+          description: "No se encuentra el plato en la base de datos"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlatoEditResponse404"
+        "401":
+          description: "El usuario no esta autorizado a hacer el cambio"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Response401"
+                  
+ 
+components:
+  schemas:
+  
+#HEADERS
+
+    TokenUsuario:
+      type: "object"
+      properties:
+        Authorization:
+          type: "string"
+          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjpbMywidHJ1ZSJdLCJpYXQiOjE1OTkzNjM5NzB9.eLTwQSke2ZHpInixTfpqpcZX90Cl7tDGNMibIntZaW0
+
+#RECEIVED FROM FRONTEND
+
+  #USUARIOS
+  
+    Registro:
+      type: "object"
+      properties:
+        Nombre:
+          type: "string"
+          example: Profe
+        Apellido:
+          type: "string"
+          example: Acamica
+        Email:
+          type: "string"
+          example: profe@acamica.com
+        Telefono:
+          type: "string"
+          example: "321-856-8464"
+        Direccion:
+          type: "string"
+          example: 123 Awesome ST
+        Password:
+          type: "string"
+          example: unPassword
+
+    Usuario:
+      type: "object"
+      properties:
+        Email:
+          type: "string"
+          example: profe@acamica.com
+        password:
+          type: "string"
+          example: unPassword
+          
+    UsuarioEdit:
+      type: "object"
+      properties:
+        Usuario_ID:
+          type: "integer"
+          format: "int64"
+          example: 3
+        Nombre:
+          type: "string"
+          example: Profe
+        Apellido:
+          type: "string"
+          example: Acamica
+        Email:
+          type: "string"
+          example: profe@acamica.com
+        Telefono:
+          type: "string"
+          example: "321-856-8464"
+        Direccion:
+          type: "string"
+          example: 123 Awesome ST
+        Password:
+          type: "string"
+          example: unPassword
+
+    UsuarioDelete:
+      type: "object"
+      properties:
+        Usuario_ID:
+          type: "integer"
+          format: "int64"
+          example: 3
+          
+  #PEDIDOS        
+  
+    PedidosCreate:
+      type: "object"
+      properties:
+        tipoPago:
+          type: "string"
+          example: "credito"
+        items:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              productoID:
+                type: "integer"
+                format: "int64"
+                example: 1
+              Cantidad:
+                type: "integer"
+                format: "int64"
+                example: 2
+        Cantidad:
+          type: "integer"
+          format: "int64"
+          example: "1000"
+          
+    PedidosStatusChange:
+      type: "object"
+      properties:
+        status:
+          type: "string"
+          example: "Enviado"
+  
+  #PLATOS
+  
+    PlatosCreate:
+      type: "object"
+      properties:
+        Nombre:
+          type: "string"
+          example: "Choripan Deluxe"
+        Precio:
+          type: "integer"
+          format: "int64"
+          example: "185"
+        Foto:
+          type: "string"
+          example: "https://www.laylita.com/recetas/wp-content/uploads/Receta-del-choripan.jpg"
+          
+    PlatosChange:
+      type: "object"
+      properties:
+        producto_ID:
+          type: "integer"
+          format: "int64"
+          example: 1
+        datos:
+          type: "object"
+          properties:
+            Nombre:
+              type: "string"
+              example: "Choripan Deluxe"
+            Precio:
+              type: "integer"
+              format: "int64"
+              example: "185"
+            Foto:
+              type: "string"
+              example: "https://www.laylita.com/recetas/wp-content/uploads/Receta-del-choripan.jpg"
+    
+    PlatosDelete:
+      type: "object"
+      properties:
+        producto_ID:
+          type: "integer"
+          format: "int64"
+          example: 1
+          
+    
+#SENT TO FRONTEND
+
+  #USUARIOS
+  
+    UsuarioRegistroResponse201:
+      type: "object"
+      properties:
+        Msg:
+          type: "string"
+          example: "Usuario registrado correctamente"
+          
+    UsuarioRegistroResponse409:
+      type: "object"
+      properties:
+        msg:
+          type: "string"
+          example: "Este email ya esta registrado"
+          
+    
+    UsuarioLoginResponse200:
+      type: "object"
+      properties:
+        msg:
+          type: "string"
+          example: "Hola Profe, Bienvenido!"
+        token:
+          type: "string"
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjpbMywiMCJdLCJpYXQiOjE1OTk0MjI0MTYsImV4cCI6MTU5OTQyMjQ3Nn0.RkdSI4zcMZfIYtzxa07GRHJw9TZCcfu7QcPAXk-PPaA"
+          
+    UsuarioLoginResponse401:
+      type: "object"
+      properties:
+        msg:
+          type: "string"
+          example: "Contraseña incorrecta"
+          
+    UsuarioLoginResponse404:
+      type: "object"
+      properties:
+        msg:
+          type: "string"
+          example: "No existe el usuario"
+          
+    UsuarioEditResponse200:
+      type: "object"
+      properties: 
+        msg:
+          type: "string"
+          example: "El usuario Profe fue actualizado"
+          
+    UsuarioEditResponse404:
+      type: "object"
+      properties: 
+        msg:
+          type: "string"
+          example: "No hay usuario con este ID"
+          
+    UsuarioDeleteResponse200:
+      type: "object"
+      properties: 
+        msg:
+          type: "string"
+          example: "El usuario fue removido exitosamente"
+          
+    PedidoCreateResponse200:
+      type: "object"
+      properties:
+        msg:
+          type: "string"
+          example: "Pedido recibido, su numero de pedido es '1'"
+        pedido:
+          $ref: "#/components/schemas/PedidosCreate"
+    
+    PedidoViewResponse200:
+      type: object
+      properties:
+        Pedido_ID:
+          type: number
+          example: 1
+        usuario_ID:
+          type: number
+          example: 1
+        TipoPago:
+          type: string
+          example: "Credito"
+        Estado:
+          type: string
+          example: "Nuevo"
+        Fecha:
+          type: string
+          example: "2020-09-06 22:46:35"
+        Total:
+          type: number
+          example: 1000
+          
+    PedidosStatusChangeResponse200:
+      type: "object"
+      properties:
+        msg:
+          type: "string"
+          example: "El estado del pedido ha sido modificado a Enviado"
+          
+    PedidosStatusChangeResponse404:
+      type: "object"
+      properties:
+        msg:
+          type: "string"
+          example: "El numero de pedido no existe"
+    
+    PedidosDeleteResponse200:
+      type: "object"
+      properties:
+        msg:
+          type: "string"
+          example: "El pedido fue removido exitosamente"
+          
+    Response401:
+      type: "object"
+      properties:
+        msg:
+          type: "string"
+          example: "No estas autorizado"
+          
+    PlatoCreateResponse200:
+      type: "object"
+      properties:
+        msg:
+          type: "string"
+          example: "Producto 'Choripan Deluxe' creado correctamente"
+          
+    PlatosResponse200:
+      type: "array"
+      items:
+        type: "object"
+        properties:
+          producto_ID:
+            type: "integer"
+            format: "int64"
+            example: 1
+          Nombre:
+            type: "string"
+            example: "Pizza Mozzarella"
+          Precio:
+            type: "integer"
+            format: "int64"
+            example: 200
+          Foto:
+            type: "string"
+            example: "https://imagenpng.com/wp-content/uploads/2016/07/pizza1.jpg"
+      
+    PlatoEditResponse200:
+      type: "object"
+      properties:
+        msg:
+          type: "string"
+          example: "El plato 'Choripan Deluxe' fue actualizado"
+
+    PlatoEditResponse404:
+      type: "object"
+      properties:
+        msg:
+          type: "string"
+          example: "El plato no se encuentra en la base de datos"
+          
+    PlatoDeleteResponse200:
+      type: "object"
+      properties:
+        msg:
+          type: "string"
+          example: "El plato fue removido exitosamente"
