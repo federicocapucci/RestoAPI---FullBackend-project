@@ -179,13 +179,12 @@ app.put('/usuario', tokenVerifier, (req, res) => {
                         replacements: [Nombre, Apellido, Email, Telefono, Direccion, Password, usuario_ID]
                     }).then((respuesta) => {
                         res.status(200).send({
-                            Message: "El usuario " + Nombre + " fue actualizado",
-                            Data: respuesta[0]
+                            Message: "El usuario " + Nombre + " fue actualizado"
                         })
                     })
-                    .catch((err) => res.status(409).send("Este email ya esta registrado"))
+                    .catch((err) => res.status(409).send({ msg: "Este email ya esta registrado" }))
             } else {
-                return res.status(404).send('No hay un usuario con este ID')
+                return res.status(404).send({ msg: 'No hay un usuario con este ID' })
             }
         })
         .catch((err) => res.status(501).send(err))
@@ -210,10 +209,10 @@ app.delete('/usuario', tokenVerifier, (req, res) => {
             replacements: [usuario_ID]
         })
 
-        res.status(200).send("El usuario fue removido exitosamente")
+        res.status(200).send({ msg: "El usuario fue removido exitosamente" })
 
     } else {
-        res.status(401).send('N ')
+        res.status(401).send({ msg: 'No estas autorizado' })
     }
 })
 
@@ -292,7 +291,7 @@ app.put('/pedidos/:pedido_ID', tokenVerifier, (req, res) => {
                     })
                     .then((respuesta) => {
 
-                        res.status(200).send('El estado del pedido ha sido modificado a ' + req.body.status)
+                        res.status(200).send({ msg: 'El estado del pedido ha sido modificado a ' + req.body.status })
                     })
                     .catch((err) => res.status(500).send({ msg: 'ha ocurrido un error', err: err }))
             } else {
@@ -338,7 +337,7 @@ app.delete('/pedidos/:pedido_ID', tokenVerifier, (req, res) => {
         })
 
     } else {
-        res.status(401).send('No estas autorizado')
+        res.status(401).send({ msg: 'No estas autorizado' })
     }
 })
 
@@ -382,7 +381,7 @@ app.post('/platos', tokenVerifier, (req, res) => {
 
 
     } else {
-        res.status(401).send('No estas autorizado')
+        res.status(401).send({ msg: 'No estas autorizado' })
     }
 
 })
@@ -438,7 +437,7 @@ app.put('/platos', tokenVerifier, (req, res) => {
 
 
     } else {
-        res.status(401).send('No estas autorizado')
+        res.status(401).send({ msg: 'No estas autorizado' })
     }
 
 })
