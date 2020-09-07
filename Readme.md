@@ -39,7 +39,7 @@ Sigue los pasos a continuacion para poder instalar el proyecto desde Github
 git clone https://github.com/federicocapucci/RestoAPI.git
 ```
 
-2- Luego, es necesario abrir Visual code (Node debe de estar instalado). Y corre el siguiente codigo en una terminal, para instalar los modulos necesarios.
+2- Luego, es necesario abrir Visual code en la carpeta descargada (Node debe de estar instalado) . Y corre el siguiente codigo en una terminal, para instalar los modulos necesarios.
 
 ```
 npm install express bcrypt jsonwebtoken sequelize mysql2 
