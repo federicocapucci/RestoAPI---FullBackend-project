@@ -80,7 +80,7 @@ node server.js
 
 La documentacion ala API se puede encontrar aqui:
 <br>
-https://app.swaggerhub.com/apis-docs/federicocapucci/RestoAPI/0.0.1
+https://app.swaggerhub.com/apis-docs/federicocapucci/RestoAPI/1.0.0
 <br><br>
 
 
