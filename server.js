@@ -14,7 +14,7 @@ const db = new Sequelize('resto', 'root', '', {
 const port = 3000;
 const secret = require('./config')
 const tokenVerifier = require('./middleware')
-const expireTokenTime = 60
+const expireTokenTime = 60 * 60
 
 //--------------------------------------------------//
 
